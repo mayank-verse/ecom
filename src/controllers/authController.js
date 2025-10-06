@@ -1,3 +1,4 @@
+// src/controllers/authController.js
 const pool = require('../../config/db');
 const bcrypt = require('bcrypt');
 
@@ -28,6 +29,8 @@ exports.postRegister = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Note: A default 'role' of 'customer' should be set here or in the SQL schema default.
+    // Assuming the SQL schema handles the default role.
     await pool.query(
       'INSERT INTO users (name, email, password) VALUES ($1, $2, $3)',
       [name, email, hashedPassword]

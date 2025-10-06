@@ -1,0 +1,52 @@
+<%- include('../partials/admin-navbar') %>
+
+<div class="container mx-auto my-10">
+  <h1 class="text-4xl font-bold mb-8 text-gray-800"><%= title %></h1>
+
+  <% if (success_msg && success_msg.length > 0) { %>
+    <div class="flash-success flash-message"><%= success_msg %></div>
+  <% } %>
+  <% if (error_msg && error_msg.length > 0) { %>
+    <div class="flash-error flash-message"><%= error_msg %></div>
+  <% } %>
+
+  <div class="overflow-x-auto bg-white shadow-xl rounded-lg">
+    <table class="w-full table-auto">
+      <thead>
+        <tr>
+          <th class="px-4 py-3 text-left">Order ID</th>
+          <th class="px-4 py-3 text-left">Customer</th>
+          <th class="px-4 py-3 text-left">Total</th>
+          <th class="px-4 py-3 text-left">Status</th>
+          <th class="px-4 py-3 text-left">Placed On</th>
+          <th class="px-4 py-3 text-left">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% orders.forEach(order => { %>
+          <tr class="border-b hover:bg-gray-50">
+            <td class="px-4 py-4 font-mono text-sm text-gray-500">#<%= order.order_id %></td>
+            <td class="px-4 py-4">
+                <p class="font-semibold"><%= order.user_name %></p>
+                <p class="text-sm text-gray-500"><%= order.user_email %></p>
+            </td>
+            <td class="px-4 py-4 font-bold price-display">$<%= order.total_amount.toFixed(2) %></td>
+            <td class="px-4 py-4">
+                <span class="font-bold <%= order.status === 'pending' ? 'text-orange-500' : 'text-green-600' %>">
+                    <%= order.status.toUpperCase() %>
+                </span>
+            </td>
+            <td class="px-4 py-4 text-gray-700">
+                <%= order.created_at.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+            </td>
+            <td class="px-4 py-4">
+                <a href="#" class="text-blue-600 hover:text-blue-800 font-semibold">View/Update</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,16 @@
+<header class="bg-gray-900 text-white shadow-lg">
+  <div class="container mx-auto flex justify-between items-center py-4">
+    <a href="/admin/dashboard" class="text-2xl font-bold text-red-400">ECOM Admin</a>
+    <nav>
+      <ul class="flex space-x-6 items-center">
+        <li><a href="/admin/products" class="hover:text-red-300">Products</a></li>
+        <li><a href="/admin/orders" class="hover:text-red-300">Orders</a></li>
+        
+        <% if(user) { %>
+          <li><span class="text-sm">Logged in as: <%= user.name %></span></li>
+          <li><a href="/auth/logout" class="bg-red-600 text-white py-1 px-3 rounded hover:bg-red-700">Logout</a></li>
+        <% } %>
+      </ul>
+    </nav>
+  </div>
+</header>

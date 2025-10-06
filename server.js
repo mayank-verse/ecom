@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
@@ -58,17 +57,25 @@ app.get('/', (req, res) => {
   res.render('pages/home', { title: 'Home' });
 });
 
-// Example: Auth route
+// Auth route
 const authRoutes = require('./src/routes/authRoutes');
 app.use('/auth', authRoutes);
 
-// Example: Product routes
+// Product routes
 const productRoutes = require('./src/routes/productRoutes');
 app.use('/products', productRoutes);
 
-// Example: Cart routes
+// Cart routes
 const cartRoutes = require('./src/routes/cartRoutes');
 app.use('/cart', cartRoutes);
+
+// Order routes
+const orderRoutes = require('./src/routes/orderRoutes');
+app.use('/orders', orderRoutes);
+
+// Admin routes 
+const adminRoutes = require('./src/routes/adminRoutes');
+app.use('/admin', adminRoutes);
 
 // 404 Error page
 app.use((req, res, next) => {
