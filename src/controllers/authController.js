@@ -30,7 +30,6 @@ exports.postRegister = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Note: A default 'role' of 'customer' should be set here or in the SQL schema default.
-    // Assuming the SQL schema handles the default role.
     await pool.query(
       'INSERT INTO users (name, email, password) VALUES ($1, $2, $3)',
       [name, email, hashedPassword]
@@ -45,7 +44,7 @@ exports.postRegister = async (req, res) => {
   }
 };
 
-// Handle login
+// Handle login (UPDATED LOGIC HERE)
 exports.postLogin = async (req, res) => {
   const { email, password } = req.body;
 
@@ -69,10 +68,18 @@ exports.postLogin = async (req, res) => {
       return res.redirect('/auth/login');
     }
 
-    // Set session
+    // Set session (role is fetched from the DB)
     req.session.user = { id: user.user_id, name: user.name, email: user.email, role: user.role };
     req.flash('success_msg', `Welcome ${user.name}!`);
-    res.redirect('/');
+
+    // --- CONDITIONAL REDIRECT LOGIC ADDED ---
+    if (user.role === 'admin') {
+      res.redirect('/admin/dashboard'); // Redirect admin users to the dashboard
+    } else {
+      res.redirect('/'); // Redirect customers to the homepage
+    }
+    // ----------------------------------------
+
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

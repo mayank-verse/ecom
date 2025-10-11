@@ -11,7 +11,6 @@ exports.getDashboard = (req, res) => {
 // 1. Get all products (Admin view)
 exports.getProducts = async (req, res) => {
     try {
-        // Fetches all products including stock information (which the public catalog may not show)
         const result = await pool.query('SELECT * FROM products ORDER BY product_id DESC');
         res.render('admin/products/index', { title: 'Manage Products', products: result.rows });
     } catch (err) {
@@ -26,9 +25,10 @@ exports.getAddProduct = (req, res) => {
     res.render('admin/products/add', { title: 'Add New Product' });
 };
 
-// 3. Handle Add Product Submission
+// 3. Handle Add Product Submission (FIXED INSERT QUERY)
 exports.postAddProduct = async (req, res) => {
-    const { name, description, price, image, stock, category } = req.body;
+    // We still extract 'category' but ignore it in the SQL query for the fix
+    const { name, description, price, image, stock, category } = req.body; 
 
     if (!name || !description || !price || !stock) {
         req.flash('error_msg', 'Please fill in required fields.');
@@ -36,9 +36,10 @@ exports.postAddProduct = async (req, res) => {
     }
 
     try {
+        // CORRECTED: Removed 'category' column and $6 placeholder
         await pool.query(
-            'INSERT INTO products (name, description, price, image, stock, category) VALUES ($1, $2, $3, $4, $5, $6)',
-            [name, description, parseFloat(price), image, parseInt(stock), category || 'General']
+            'INSERT INTO products (name, description, price, image, stock) VALUES ($1, $2, $3, $4, $5)',
+            [name, description, parseFloat(price), image, parseInt(stock)]
         );
         req.flash('success_msg', `${name} added successfully.`);
         res.redirect('/admin/products');
@@ -66,9 +67,10 @@ exports.getEditProduct = async (req, res) => {
     }
 };
 
-// 5. Handle Edit Product Submission
+// 5. Handle Edit Product Submission (CORRECTED UPDATE QUERY)
 exports.postEditProduct = async (req, res) => {
     const id = req.params.id;
+    // We still extract 'category' but ignore it in the SQL query for the fix
     const { name, description, price, image, stock, category } = req.body;
 
     if (!name || !description || !price || !stock) {
@@ -77,9 +79,10 @@ exports.postEditProduct = async (req, res) => {
     }
 
     try {
+        // CORRECTED: Removed 'category' from the SET clause
         await pool.query(
-            'UPDATE products SET name=$1, description=$2, price=$3, image=$4, stock=$5, category=$6 WHERE product_id=$7',
-            [name, description, parseFloat(price), image, parseInt(stock), category || 'General', id]
+            'UPDATE products SET name=$1, description=$2, price=$3, image=$4, stock=$5 WHERE product_id=$6',
+            [name, description, parseFloat(price), image, parseInt(stock), id]
         );
         req.flash('success_msg', `${name} updated successfully.`);
         res.redirect('/admin/products');
@@ -107,7 +110,6 @@ exports.deleteProduct = async (req, res) => {
 // --- Order Management (Basic) ---
 exports.getOrders = async (req, res) => {
     try {
-        // Retrieve all orders from the database
         const ordersResult = await pool.query(
             'SELECT o.*, u.name as user_name, u.email as user_email FROM orders o JOIN users u ON o.user_id = u.user_id ORDER BY created_at DESC'
         );
