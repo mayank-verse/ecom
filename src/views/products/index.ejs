@@ -12,7 +12,8 @@
   
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
     <% if (products.length === 0) { %>
-        <p class="text-gray-600 col-span-full">No products are available right now. Please check back later.</p>
+        <p class="text-gray-600 col-span-full">No products are available right now.
+Please check back later.</p>
     <% } %>
     
     <% products.forEach(product => { %>
@@ -21,12 +22,14 @@
         
         <div class="p-4 flex flex-col flex-grow">
           <h2 class="font-bold text-xl mb-1 text-gray-900"><%= product.name %></h2>
+         
           <p class="text-gray-500 text-sm mb-3 flex-grow"><%= product.description.slice(0, 70) %>...</p>
           
           <div class="flex items-center justify-between mt-auto pt-2">
-            <span class="price-display text-green-600 text-2xl font-bold">$<%= product.price.toFixed(2) %></span>
+            <span class="price-display text-green-600 text-2xl font-bold">$<%= parseFloat(product.price).toFixed(2) %></span>
             <a href="/products/<%= product.product_id %>" class="bg-blue-600 text-white py-2 px-4 rounded-lg text-sm font-semibold hover:bg-blue-700 transition duration-200">
               View Details
+         
             </a>
           </div>
         </div>

@@ -6,8 +6,11 @@ const { ensureAuthenticated } = require('../middlewares/authMiddleware');
 // Checkout page
 router.get('/checkout', ensureAuthenticated, orderController.getCheckout);
 
-// Place order
-router.post('/place-order', ensureAuthenticated, orderController.placeOrder);
+// NEW ROUTE: Start the payment process (Razorpay Order creation)
+router.post('/process-payment', ensureAuthenticated, orderController.processPayment);
+
+// NEW ROUTE: Razorpay success callback route (finalize DB record)
+router.post('/verify-payment', ensureAuthenticated, orderController.verifyPayment);
 
 // Order history
 router.get('/history', ensureAuthenticated, orderController.orderHistory);

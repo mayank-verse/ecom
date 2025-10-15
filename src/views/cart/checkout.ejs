@@ -1,0 +1,65 @@
+<%- include('../partials/navbar') %>
+
+<div class="container mx-auto my-10">
+  <h1 class="text-4xl font-bold mb-8 text-gray-800"><%= title %></h1>
+
+  <% if(cartItems.length === 0) { %>
+    <p class="text-gray-700">Your cart is empty!
+<a href="/products" class="text-blue-600 hover:text-blue-800 font-semibold">Go shopping</a>.</p>
+  <% } else { %>
+    
+    <h2 class="text-2xl font-semibold mb-4 text-gray-700">Order Summary</h2>
+
+    <table class="checkout-table w-full table-auto mb-8">
+      <thead>
+        <tr>
+          <th class="px-4 py-3 text-left">Product</th>
+          <th class="px-4 py-3 text-left">Price</th>
+          <th class="px-4 py-3 text-center">Quantity</th>
+          <th class="px-4 py-3 text-left">Subtotal</th>
+  
+        </tr>
+      </thead>
+      <tbody>
+      <% cartItems.forEach(item => { %>
+       <% 
+         // FIX: Convert item.price to a number before calculation and formatting
+         const itemPrice = parseFloat(item.price);
+         const subtotal = itemPrice * item.quantity;
+       %>
+       <tr class="border-b">
+          <td class="px-4 py-3 font-semibold"><%= item.name %></td>
+          <td class="px-4 py-3">$<%= itemPrice.toFixed(2) %></td>
+          <td class="px-4 py-3 text-center"><%= item.quantity %></td>
+          <td class="px-4 py-3 font-semibold">$<%= subtotal.toFixed(2) %></td>
+   
+        </tr>
+      <% }) %>
+      <tr class="font-extrabold">
+        <td colspan="3" class="px-4 py-4 text-right border-t-2 text-xl">Grand Total:</td>
+        <td class="px-4 py-4 price-display text-left border-t-2 text-2xl">$<%= parseFloat(grandTotal).toFixed(2) %></td>
+      </tr>
+      </tbody>
+    </table>
+
+    <h2 class="text-2xl font-semibold mb-4 text-gray-700">Payment Method</h2>
+    <div class="mb-8 p-4 border border-gray-300 rounded-lg bg-gray-50">
+        <p class="font-semibold mb-2">Cash on Delivery (COD)</p>
+ 
+        <p class="text-gray-600">Your order will be processed immediately.
+Payment is due upon delivery.</p>
+    </div>
+    
+    <form action="/orders/place-order" method="POST" class="space-y-4">
+      <div class="flex justify-between items-center pt-4 border-t border-gray-300">
+        <a href="/cart" class="text-blue-600 hover:text-blue-800 font-semibold">← Back to Cart</a>
+        <button type="submit" class="bg-green-600 text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-green-700 transition duration-300 shadow-xl">
+            Confirm & Place Order
+        </button>
+      </div>
+    </form>
+ 
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>
